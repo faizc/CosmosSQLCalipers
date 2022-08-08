@@ -96,7 +96,7 @@ Commands:
 ```
 
 Usage command for 'spn'
-```aidl
+```
 Usage: cosmosbenchmark spn [-dc] -c=<Collection Name> -cl=<Client Id>
                            -cs=<Client Secret> -d=<Database Name> -e=https:
                            //<ENDPOINT>.documents.azure.com:443/
