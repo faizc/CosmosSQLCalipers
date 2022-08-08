@@ -8,6 +8,8 @@ import com.azure.cosmos.models.PartitionKey;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.cosmoscalipers.connection.async.CosmosAsyncConnection;
+import com.cosmoscalipers.connection.sync.CosmosSyncConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +21,14 @@ public class SQLSyncDelete {
     private static Meter throughput = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLSyncDelete.class);
 
-    public void execute(CosmosContainer container, List<String> orderIdList, int numberOfOps, MetricRegistry metrics) {
-
+    public void execute(final CosmosSyncConnection connection,
+                        final List<String> orderIdList,
+                        final int numberOfOps,
+                        final MetricRegistry metrics) {
         sqlSyncDeleteRequestUnits = metrics.histogram("Sync delete RUs");
         sqlSyncDeleteLatency = metrics.histogram("Sync delete latency (ms)");
         throughput = metrics.meter("Sync delete throughput");
-        deleteOps(container, orderIdList, numberOfOps);
+        deleteOps(connection.getContainer(), orderIdList, numberOfOps);
 
     }
 

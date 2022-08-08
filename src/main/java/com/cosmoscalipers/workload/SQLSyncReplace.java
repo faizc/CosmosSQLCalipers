@@ -8,7 +8,8 @@ import com.azure.cosmos.models.PartitionKey;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.cosmoscalipers.driver.Payload;
+import com.cosmoscalipers.connection.sync.CosmosSyncConnection;
+import com.cosmoscalipers.pojo.Payload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +21,14 @@ public class SQLSyncReplace {
     private static Meter throughput = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLSyncReplace.class);
 
-    public void execute(CosmosContainer container, List<String> orderIdList, int numberOfOps, MetricRegistry metrics) {
-
+    public void execute(final CosmosSyncConnection connection,
+                        final List<String> orderIdList,
+                        final int numberOfOps,
+                        final MetricRegistry metrics) {
         sqlSyncUpsertItemRequestUnits = metrics.histogram("Sync replace RUs");
         sqlSyncUpsertItemLatency = metrics.histogram("Sync replace latency (ms)");
         throughput = metrics.meter("Sync replace throughput");
-        updateOps(container, orderIdList, numberOfOps);
+        updateOps(connection.getContainer(), orderIdList, numberOfOps);
 
     }
 

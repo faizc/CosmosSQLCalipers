@@ -6,38 +6,17 @@ CosmosSQLCalipers is a basic Cosmos SQL API benchmarking utility. It enables dev
 + Impact of sync versus async APIs
 + Request unit (RUs) consumption
 + Network latencies and throughput
++ Supports masterkey and SPN based authentication
 
 This enables developers to get a preview into the overall scalability, response times and cost considerations when evaluating Cosmos SQL API. 
 
-## News
-This section provides the latest updates
-
-#### Cosmos SQL client dependency
-CosmosSQLCalipers relies on the [azure-cosmos](https://mvnrepository.com/artifact/com.azure/azure-cosmos) SDK.
-
-#### Test result links
-- [Summary analysis for test run on August 10th 2020](https://github.com/deepub/CosmosSQLCalipers/blob/master/output/analysis/all_consistency_levels_08102020/README.md)
-- [Summary analysis for test run on July 1st 2020](https://github.com/deepub/CosmosSQLCalipers/blob/master/output/analysis/all_consistency_levels_07012020/README.md) 
-- [Summary analysis for test run on June 21st 2020](https://github.com/deepub/CosmosSQLCalipers/blob/master/output/analysis/session_consistency_06212020/README.md) 
-
-##### *v4 client*
-Project upgraded to v4.5.0. Following consistency levels are running fine:
+##### *Use Azure SDK v4*
+Project upgraded to [v4.33.1](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/cosmos/azure-cosmos/CHANGELOG.md#4331-2022-07-22). Following consistency levels are running fine:
 * STRONG
 * BOUNDED_STALENESS
 * SESSION
 * CONSISTENCY_PREFIX
 * EVENTUAL
-
-##### *v3 client*
-
-Following consistency levels are running fine:
-* STRONG
-* SESSION
-* EVENTUAL
-
-Following consistency levels are failing:
-* BOUNDED_STALENESS (Creates fail with timeout exceptions)
-* CONSISTENCY_PREFIX (Creates fail with timeout exceptions)
 
 ## Overview
 The utility executes the following workflow:
@@ -107,32 +86,141 @@ SQL API workflows executed
 2. Run the benchmark test against the provisioned Cosmos account.     
 
 ## Program arguments
+
+Execute Cosmos Benchmark utility using two different modes now, one with SPN based authentication and other with Master key based authentication
+```
+Usage: cosmosbenchmark [COMMAND]
+Commands:
+  spn        Azure SPN based authentication test
+  masterkey  Azure master key based authentication test
+```
+
+Usage command for 'spn'
+```aidl
+Usage: cosmosbenchmark spn [-dc] -c=<Collection Name> -cl=<Client Id>
+                           -cs=<Client Secret> -d=<Database Name> -e=https:
+                           //<ENDPOINT>.documents.azure.com:443/
+                           [-l=<consistencyLevel>] -n=<Number of documents>
+                           [-o=<operation>] -p=<Payload Size in KBs>
+                           [-r=<Maximum retry attempts>] [-rf=<reporter>]
+                           -rg=<resource group> [-ru=<Provisioned RU's>]
+                           [-rwi=<Retry wait time in sec.>]
+                           -sub=<subscriptionId> -t=<Tenant Id>
+Azure SPN based authentication test
+  -c, --collection=<Collection Name>
+         Cosmos collection name
+      -cl, --clientId=<Client Id>
+         Client Id
+      -cs, --clientSecret=<Client Secret>
+         Client Secret
+  -d, --database=<Database Name>
+         Cosmos Database Name
+      -dc, --deleteContainer
+         Delete and recreate the container (true/false), defaults to true
+  -e, --endpoint=https://<ENDPOINT>.documents.azure.com:443/
+         Cosmos Service endpoint
+  -l, --consistency=<consistencyLevel>
+         Consistency level to be used (Strong, BoundedStaleness, Session,
+           Eventual, ConsistentPrefix). If omitted the Session consistency
+           would be used and should be weaker than account level consistency
+  -n, --numberofdocument=<Number of documents>
+         Number of documents to be tested
+  -o, --operation=<operation>
+         Primary operation being used (SQL_ASYNC_PARTITION_KEY_READ,
+           SQL_SYNC_PARTITION_KEY_READ, SQL_SYNC_POINT_READ,
+           SQL_ASYNC_POINT_READ, SQL_ALL, ALL_SYNC_OPS, ALL_ASYNC_OPS,
+           SQL_SYNC_UPSERT, SQL_ASYNC_UPSERT, SQL_SYNC_REPLACE,
+           SQL_ASYNC_REPLACE, SQL_SYNC_READ_ALL_ITEMS,
+           SQL_ASYNC_READ_ALL_ITEMS, SQL_SYNC_DELETE, SQL_ASYNC_DELETE). If
+           omitted the SQL_ALL operation would be used.
+  -p, --payloadsize=<Payload Size in KBs>
+         Document size
+  -r, --retry=<Maximum retry attempts>
+         Number of retry attempts
+      -rf, --reporting=<reporter>
+         Reporting format to be used (CONSOLE, CSV). If omitted the CONSOLE
+           operation would be used.
+      -rg, --resourceGroup=<resource group>
+         Resource group for the Cosmos account
+      -ru, --provisionedRUs=<Provisioned RU's>
+         RUs to be provisioned when Cosmos container is created
+      -rwi, --retry-wait-interval=<Retry wait time in sec.>
+         max retry wait interval (in seconds)
+      -sub, --subscriptionId=<subscriptionId>
+         Subscription Id to be used
+  -t, --tenantId=<Tenant Id>
+         Tenant Id
+```
+
+Usage command for 'masterkey' 
 ````
-usage: Cosmos DB SQL Benchmark
-    --collection <arg>                  Cosmos collection name
-    --consistencylevel <arg>            Consistency level to be exercised
-    --database <arg>                    Enter Cosmos Database Name
-    --hostname <arg>                    Cosmos Service endpoint
-    --key <arg>                         Cosmos key for authentication
-    --maxpoolsize <arg>                 Max pool size
-    --maxretryattempts <arg>            Max retry attempts when
-                                        backpressure is encountered
-    --maxretrywaittimeinseconds <arg>   Max retry wait time in seconds
-    --numberofdocs <arg>                Number of documents to be tested
-    --operation <arg>                   Primary operation being exercised
-    --payloadSize <arg>                 Document size
-    --provisionedrus <arg>              RUs to be provisioned when Cosmos
-                                        container is created
-    --reporter                          CONSOLE or CSV. The results of the test will
-                                        be sent to the appropriate reporter
-    --deleteContainer                   Optional. Defaults to false. Delete and recreate
-                                        the container or not(Y/N) or (true/false)                                    
+Usage: cosmosbenchmark masterkey [-dc] -c=<Collection Name> -d=<Database
+                                 Name> -e=https://<ENDPOINT>.documents.azure.
+                                 com:443/ -k=<Access Key>
+                                 [-l=<consistencyLevel>] -n=<Number of
+                                 documents> [-o=<operation>] -p=<Payload Size
+                                 in KBs> [-r=<Maximum retry attempts>]
+                                 [-rf=<reporter>] [-ru=<Provisioned RU's>]
+                                 [-rwi=<Retry wait time in sec.>]
+Azure master key based authentication test
+  -c, --collection=<Collection Name>
+                           Cosmos collection name
+  -d, --database=<Database Name>
+                           Cosmos Database Name
+      -dc, --deleteContainer
+                           Delete and recreate the container (true/false),
+                             defaults to true
+  -e, --endpoint=https://<ENDPOINT>.documents.azure.com:443/
+                           Cosmos Service endpoint
+  -k, --key=<Access Key>   Access key
+  -l, --consistency=<consistencyLevel>
+                           Consistency level to be used (Strong,
+                             BoundedStaleness, Session, Eventual,
+                             ConsistentPrefix). If omitted the Session
+                             consistency would be used.
+  -n, --numberofdocument=<Number of documents>
+                           Number of documents to be tested
+  -o, --operation=<operation>
+                           Primary operation being used
+                             (SQL_ASYNC_PARTITION_KEY_READ,
+                             SQL_SYNC_PARTITION_KEY_READ, SQL_SYNC_POINT_READ,
+                             SQL_ASYNC_POINT_READ, SQL_ALL, ALL_SYNC_OPS,
+                             ALL_ASYNC_OPS, SQL_SYNC_UPSERT, SQL_ASYNC_UPSERT,
+                             SQL_SYNC_REPLACE, SQL_ASYNC_REPLACE,
+                             SQL_SYNC_READ_ALL_ITEMS, SQL_ASYNC_READ_ALL_ITEMS,
+                             SQL_SYNC_DELETE, SQL_ASYNC_DELETE). If omitted the
+                             SQL_ALL operation would be used.
+  -p, --payloadsize=<Payload Size in KBs>
+                           Document size
+  -r, --retry=<Maximum retry attempts>
+                           Number of retry attempts
+      -rf, --reporting=<reporter>
+                           Reporting format to be used (CONSOLE, CSV). If
+                             omitted the CONSOLE operation would be used.
+      -ru, --provisionedRUs=<Provisioned RU's>
+                           RUs to be provisioned when Cosmos container is
+                             created
+      -rwi, --retry-wait-interval=<Retry wait time in sec.>
+                           max retry wait interval (in seconds)
 ````
 
 ## Building and running
 
 ````
 mvn clean package
-mvn exec:java -Dexec.mainClass="com.cosmoscalipers.Measure" -Dexec.cleanupDaemonThreads=false -Dexec.args="--hostname https://youraccount.documents.azure.com:443/ --database demo --collection orders --key <your account key> --numberofdocs 1000 --payloadSize 500 --consistencylevel SESSION --provisionedrus 400 --maxpoolsize 100 --maxretryattempts 10 --maxretrywaittimeinseconds 1 --operation SQL_ALL --reporter CONSOLE --deleteContainer false"
 ````
 
+### Executing using the 'masterkey' option 
+````
+mvn exec:java -Dexec.mainClass="com.cosmoscalipers.Benchmark" -Dexec.cleanupDaemonThreads=false -Dexec.args="masterkey --endpoint=<cosmos-endpoint> --database=<database-name> --collection=<container-name> --consistency=SESSION --numberofdocument=1 --payloadsize=1 --key=<access key for the account>"
+````
+
+### Executing using the 'spn' option
+
+#### Following are few pre-requisites before you execute the application
+* The Service Principal needs to be created beforehand and make sure it has been assigned "Cosmos DB Operator" role on the Cosmos account
+* In order for the CRUD operations to work on the Cosmos database, you would need to assign the required roles to the service principal, the details of which are available [here](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#using-azure-powershell-1) 
+
+````
+mvn exec:java -Dexec.mainClass="com.cosmoscalipers.Benchmark" -Dexec.cleanupDaemonThreads=false -Dexec.args="spn --subscriptionId=<subscriptionId> --resourceGroup=<resourceGroup> --clientId=<client-id> --clientSecret=<client-secret> --tenantId=<tenant-id> --endpoint=<cosmos-endpoint> --database=<database-name> --collection=<container-name> --consistency=SESSION --numberofdocument=100 --payloadsize=1 --operation SQL_ASYNC_POINT_READ"
+````

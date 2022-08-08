@@ -7,7 +7,8 @@ import com.azure.cosmos.util.CosmosPagedIterable;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.cosmoscalipers.driver.Payload;
+import com.cosmoscalipers.connection.sync.CosmosSyncConnection;
+import com.cosmoscalipers.pojo.Payload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +21,14 @@ public class SQLSyncRead {
     private static Meter throughput = null;
     private static final Logger LOGGER = LoggerFactory.getLogger(SQLSyncRead.class);
 
-    public void execute(CosmosContainer container, List<String> payloadIdList, int numberOfOps, MetricRegistry metrics) {
+    public void execute(final CosmosSyncConnection connection,
+                        final List<String> payloadIdList,
+                        final int numberOfOps,
+                        final MetricRegistry metrics) {
         requestUnits = metrics.histogram("Sync partition key read RUs");
         readLatency = metrics.histogram("Sync partition key read latency (ms)");
         throughput = metrics.meter("Sync partition key read throughput");
-        readOps(container, payloadIdList, numberOfOps);
+        readOps(connection.getContainer(), payloadIdList, numberOfOps);
     }
 
     private void readOps(CosmosContainer container, List<String> payloadIdList, int numberOfOps) {
