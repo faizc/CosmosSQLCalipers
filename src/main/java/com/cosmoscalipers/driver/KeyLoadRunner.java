@@ -26,13 +26,11 @@ public class KeyLoadRunner extends DefaultLoadRunner {
             syncConnection.initConnection(keyConfig);
             object = syncConnection;
         }
-        System.out.println("\n Get Cosmos COnnection for Workflow "+workflow+ " and object is null "+(object==null));
         return object;
     }
 
     @Override
     public void execute() throws Exception {
-        System.out.println("Execute "+keyConfig.getOperation());
         execute(keyConfig.getOperation());
     }
 }

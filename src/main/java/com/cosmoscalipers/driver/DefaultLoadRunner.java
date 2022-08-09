@@ -65,10 +65,6 @@ public abstract class DefaultLoadRunner implements LoadRunner {
 
     public abstract Object getCosmosConnection(final Workflow workflow);
 
-    /*TODO
-        Number of operation and Payload size
-     */
-
     private void executeWorkflow(final OperationType operationType) throws Exception {
         //
         List<String> payloadIdList = executeCreateDocs(operationType.getWorkflow(),
