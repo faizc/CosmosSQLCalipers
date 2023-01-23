@@ -23,7 +23,7 @@ public class Config {
                             "If omitted the Session consistency would be used. "
             })
     private ConsistencyLevel consistencyLevel = ConsistencyLevel.SESSION;
-    @Option(names = {"-ru", "--provisionedRUs"}, description = "RUs to be provisioned when Cosmos container is created", required = false, paramLabel = "<Provisioned RU's>", type = Integer.class, defaultValue = "4000")
+    @Option(names = {"-ru", "--provisionedRUs"}, description = "RUs to be provisioned when Cosmos container is created", required = false, paramLabel = "<Provisioned RU's>", type = Integer.class, defaultValue = "1000")
     private int provisionedRUs;
     private int maxPoolSize;
     @Option(names = {"-r", "--retry"}, description = "Number of retry attempts", required = false, paramLabel = "<Maximum retry attempts>", type = Integer.class, defaultValue = "0")

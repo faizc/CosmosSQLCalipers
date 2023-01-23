@@ -145,7 +145,7 @@ public final class ManagementOperations {
                         config.getCollection(),
                         sqlContainerCreateUpdateParameters.withOptions(
                                 new CreateUpdateOptions().withAutoscaleSettings(
-                                        new AutoscaleSettings().withMaxThroughput(1000)
+                                        new AutoscaleSettings().withMaxThroughput(config.getProvisionedRUs())
                                 )),
                         Context.NONE);
     }
