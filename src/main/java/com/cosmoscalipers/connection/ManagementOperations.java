@@ -144,9 +144,7 @@ public final class ManagementOperations {
                         config.getDatabase(),
                         config.getCollection(),
                         sqlContainerCreateUpdateParameters.withOptions(
-                                new CreateUpdateOptions().withAutoscaleSettings(
-                                        new AutoscaleSettings().withMaxThroughput(config.getProvisionedRUs())
-                                )),
+                                new CreateUpdateOptions().withThroughput(config.getProvisionedRUs())),
                         Context.NONE);
     }
 
