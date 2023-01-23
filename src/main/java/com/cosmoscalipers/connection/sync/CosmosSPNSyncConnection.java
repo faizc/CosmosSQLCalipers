@@ -78,7 +78,7 @@ public final class CosmosSPNSyncConnection extends CosmosSyncConnection {
         //
         managementOperations.createCosmosDatabase(spnConfig.getResourceGroup());
         this.database = client.getDatabase(spnConfig.getDatabase());
-        System.out.println("database Id "+database.getId());
+        System.out.println("database "+database.getId());
         return database.getId();
     }
 
@@ -87,7 +87,7 @@ public final class CosmosSPNSyncConnection extends CosmosSyncConnection {
         managementOperations.createCosmosCollection(spnConfig.getResourceGroup());
         CosmosDatabase db = client.getDatabase(spnConfig.getDatabase());
         this.container = db.getContainer(spnConfig.getCollection());
-        System.out.println("Container Id "+container.getId());
+        System.out.println("Container "+container.getId());
         return container.getId();
     }
 

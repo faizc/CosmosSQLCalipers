@@ -57,6 +57,7 @@ public abstract class DefaultLoadRunner implements LoadRunner {
         } else if (workflow == Workflow.SYNC) {
             ((CosmosSyncConnection) getCosmosConnection(workflow)).closeConnection();
         }
+        System.out.println("Payload size (in bytes) "+config.getPayloadSize());
     }
 
     protected void setConfig(final Config config) {

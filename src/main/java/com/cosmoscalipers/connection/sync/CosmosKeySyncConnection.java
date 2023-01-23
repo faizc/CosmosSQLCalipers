@@ -59,6 +59,7 @@ public final class CosmosKeySyncConnection extends CosmosSyncConnection {
     public CosmosDatabaseResponse createDatabase() {
         CosmosDatabaseResponse response = client.createDatabaseIfNotExists(keyConfig.getDatabase());
         this.database = client.getDatabase(keyConfig.getDatabase());
+        System.out.println("database "+database.getId());
         return response;
     }
 
@@ -69,6 +70,7 @@ public final class CosmosKeySyncConnection extends CosmosSyncConnection {
         CosmosContainerResponse response = db.createContainerIfNotExists(cosmosContainerProperties,
                 ThroughputProperties.createManualThroughput(keyConfig.getProvisionedRUs()));
         this.container = db.getContainer(keyConfig.getCollection());
+        System.out.println("Container "+container.getId());
         return response;
     }
 

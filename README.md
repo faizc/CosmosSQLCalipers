@@ -133,7 +133,7 @@ Azure SPN based authentication test
            SQL_ASYNC_REPLACE, SQL_SYNC_READ_ALL_ITEMS,
            SQL_ASYNC_READ_ALL_ITEMS, SQL_SYNC_DELETE, SQL_ASYNC_DELETE). If
            omitted the SQL_ALL operation would be used.
-  -p, --payloadsize=<Payload Size in KBs>
+  -p, --payloadsize=<Payload Size in bytes>
          Document size
   -r, --retry=<Maximum retry attempts>
          Number of retry attempts
